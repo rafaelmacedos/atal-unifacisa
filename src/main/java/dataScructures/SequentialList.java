@@ -1,17 +1,19 @@
 package dataScructures;
 
-public class SequentialList<T> {
+import model.Book;
+
+public class SequentialList {
     private static final int INITIAL_ALLOCATION = 10;
-    private T[] elements;
+    private Book[] elements;
     private int insertedCount;
 
     @SuppressWarnings("unchecked")
     public SequentialList() {
-        this.elements = (T[]) new Object[INITIAL_ALLOCATION];
+        this.elements = new Book[INITIAL_ALLOCATION];
         this.insertedCount = 0;
     }
 
-    public void add(T element) {
+    public void add(Book element) {
         if (isEmpty()) {
             elements[0] = element;
         }
@@ -38,7 +40,7 @@ public class SequentialList<T> {
         insertedCount--;
     }
 
-    public T get(T element) {
+    public Book get(Book element) {
         for (int i = 0; i < elements.length; i++) {
             if (elements[i] == element) {
                 return element;
@@ -48,7 +50,7 @@ public class SequentialList<T> {
         return null;
     }
 
-    public T get(int index) {
+    public Book get(int index) {
         if (index > insertedCount || index < 0) {
             throw new IndexOutOfBoundsException("Index: " + index + "Size: " + insertedCount);
         }
@@ -56,7 +58,7 @@ public class SequentialList<T> {
         return elements[index];
     }
 
-    public int indexOf(T element) {
+    public int indexOf(Book element) {
         for (int i = 0; i < elements.length; i++) {
             if (elements[i] == element) {
                 return i;
@@ -66,7 +68,7 @@ public class SequentialList<T> {
         return -1;
     }
 
-    public boolean contains(T element) {
+    public boolean contains(Book element) {
         for (int i = 0; i < elements.length; i++) {
             if (elements[i] == element) {
                 return true;
@@ -76,7 +78,7 @@ public class SequentialList<T> {
         return false;
     }
 
-    public void set(T element, int index) {
+    public void set(Book element, int index) {
         if (index > insertedCount || index < 0) {
             throw new IndexOutOfBoundsException("Index: " + index + "Size: " + insertedCount);
         }
@@ -98,9 +100,43 @@ public class SequentialList<T> {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    public void sort() {
+        var arr = this.elements;
+
+        int n = this.size();
+        boolean swapped;
+
+        // Loop externo percorre todas as posições do array
+        for (int i = 0; i < n - 1; i++) {
+            swapped = false;
+
+            // Loop interno para comparar e trocar os elementos
+            for (int j = 0; j < n - 1 - i; j++) {
+                if (arr[j].compareTo(arr[j + 1]) > 0) {
+                    // Troca os elementos se o anterior for maior que o próximo
+                    Book temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                    swapped = true;
+                }
+            }
+
+            // Se não houve trocas, o array já está ordenado
+            if (!swapped) {
+                break;
+            }
+        }
+    }
+
+    public void print() {
+        for (int i = 0; i < this.size(); i++) {
+            System.out.println(elements[i].toString());
+        }
+    }
+
+
     private void resize() {
-        T[] newArray = (T[]) new Object[elements.length * 2];
+        Book[] newArray = new Book[elements.length * 2];
         System.arraycopy(elements, 0, newArray, 0, elements.length);
         elements = newArray;
     }
