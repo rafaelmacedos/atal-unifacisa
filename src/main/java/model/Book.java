@@ -1,13 +1,11 @@
 package model;
 
 public class Book implements Comparable<Book> {
-    private Integer id;
     private String title;
     private String authorName;
     private Integer publicationYear;
 
-    public Book(Integer id, String title, String authorName, Integer publicationYear) {
-        this.id = id;
+    public Book(String title, String authorName, Integer publicationYear) {
         this.title = title;
         this.authorName = authorName;
         this.publicationYear = publicationYear;
@@ -20,15 +18,7 @@ public class Book implements Comparable<Book> {
 
     @Override
     public String toString() {
-        return String.format("%d | Title: %s | Author : %s | Publication Year: %d", this.id, this.title, this.authorName, this.publicationYear);
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+        return String.format("Title: %s | Author : %s | Publication Year: %d", this.title, this.authorName, this.publicationYear);
     }
 
     public String getTitle() {

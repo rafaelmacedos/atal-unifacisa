@@ -106,14 +106,11 @@ public class SequentialList {
         int n = this.size();
         boolean swapped;
 
-        // Loop externo percorre todas as posições do array
         for (int i = 0; i < n - 1; i++) {
             swapped = false;
 
-            // Loop interno para comparar e trocar os elementos
             for (int j = 0; j < n - 1 - i; j++) {
                 if (arr[j].compareTo(arr[j + 1]) > 0) {
-                    // Troca os elementos se o anterior for maior que o próximo
                     Book temp = arr[j];
                     arr[j] = arr[j + 1];
                     arr[j + 1] = temp;
@@ -121,7 +118,6 @@ public class SequentialList {
                 }
             }
 
-            // Se não houve trocas, o array já está ordenado
             if (!swapped) {
                 break;
             }
