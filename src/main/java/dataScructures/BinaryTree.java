@@ -1,7 +1,9 @@
 package dataScructures;
 
+import model.Book;
+
 public class BinaryTree {
-    private Node root;
+    private BookNode root;
 
     public boolean isEmpty() {
         return root == null;
@@ -11,121 +13,102 @@ public class BinaryTree {
         return getAltura(this.root);
     }
 
-    private int getAltura(Node root) {
+    private int getAltura(BookNode root) {
         if (root == null) {
             return 0;
         }
         int altEsq = getAltura(root.getLeft());
         int altDir = getAltura(root.getRight());
-        if (altEsq > altDir) {
-            return altEsq + 1;
-        } else {
-            return altDir + 1;
-        }
+        return Math.max(altEsq, altDir) + 1;
     }
 
     public int getQtdNode() {
         return getQtdNode(root);
     }
 
-    private int getQtdNode(Node root) {
+    private int getQtdNode(BookNode root) {
         if (root == null) {
             return 0;
         }
-        int qtdNodeEsq = getQtdNode(root.getLeft());
-        int qtdNodeDireita = getQtdNode(root.getRight());
-        return qtdNodeEsq + qtdNodeDireita + 1;
+        return getQtdNode(root.getLeft()) + getQtdNode(root.getRight()) + 1;
     }
 
     public void imprimirArvore() {
-        if (this.root == null)
+        if (this.root == null) {
             System.out.println("Árvore vazia");
-        else
+        } else {
             imprimirArvore(this.root);
+        }
     }
 
-    private void imprimirArvore(Node node) {
+    private void imprimirArvore(BookNode node) {
         if (node.getLeft() != null) {
             imprimirArvore(node.getLeft());
         }
+        System.out.println(node.getBook());
         if (node.getRight() != null) {
             imprimirArvore(node.getRight());
         }
-        System.out.println("Nó: " + node.getValue());
     }
 
-    public void inserir(int valor) {
-        inserir(this.root, valor);
+    public void inserir(Book book) {
+        this.root = inserir(this.root, book);
     }
 
-    public void inserir(Node node, int valor) {
-        if (this.root == null) {
-            this.root = new Node(valor);
-        } else {
-            if (valor < node.getValue()) {
-                if (node.getLeft() != null) {
-                    inserir(node.getLeft(), valor);
-                } else {
-                    // Se nodo esquerdo vazio insere o novo no aqui
-                    node.setLeft(new Node(valor));
-                }
-                // Verifica se o valor a ser inserido é maior que o no corrente
-                // da árvore, se sim vai para subarvore direita
-            } else if (valor > node.getValue()) {
-                // Se tiver elemento no no direito continua a busca
-                if (node.getRight() != null) {
-                    inserir(node.getRight(), valor);
-                } else {
-                    // Se nodo direito vazio insere o novo no aqui
-                    node.setRight(new Node(valor));
-                }
-            }
+    private BookNode inserir(BookNode node, Book book) {
+        if (node == null) {
+            return new BookNode(book);
         }
+        // Comparar usando o método compareTo de Book
+        if (book.compareTo(node.getBook()) < 0) {
+            node.setLeft(inserir(node.getLeft(), book));
+        } else if (book.compareTo(node.getBook()) > 0) {
+            node.setRight(inserir(node.getRight(), book));
+        }
+        return node;
     }
 
-    public Node remover(int valor) throws Exception {
-        return remover(this.root, valor);
+    public BookNode remover(Book book) throws Exception {
+        return remover(this.root, book);
     }
 
-    private Node remover(Node node, int valor) throws Exception {
-        if (this.root == null) {
+    private BookNode remover(BookNode node, Book book) throws Exception {
+        if (node == null) {
             throw new Exception("Árvore vazia");
+        }
+        if (book.compareTo(node.getBook()) < 0) {
+            node.setLeft(remover(node.getLeft(), book));
+        } else if (book.compareTo(node.getBook()) > 0) {
+            node.setRight(remover(node.getRight(), book));
         } else {
-            if (valor < node.getValue()) {
-                node.setLeft(remover(node.getLeft(), valor));
-            } else if (valor > node.getValue()) {
-                node.setRight(remover(node.getRight(), valor));
-            } else if (node.getLeft() != null && node.getRight() != null) {
-                /* 2 filhos */
-                System.out.println("  Removeu No " + node.getValue());
-                node.setValue(encontraMinimo(node.getRight()).getValue());
+            // Nó com dois filhos
+            if (node.getLeft() != null && node.getRight() != null) {
+                BookNode minNode = encontraMinimo(node.getRight());
+                node.setBook(minNode.getBook());
                 node.setRight(removeMinimo(node.getRight()));
             } else {
-                System.out.println("  Removeu No " + node.getValue());
                 node = (node.getLeft() != null) ? node.getLeft() : node.getRight();
-            }
-            return node;
-        }
-    }
-
-    private Node removeMinimo(Node node) {
-        if (node == null) {
-            System.out.println("  ERRO ");
-        } else if (node.getLeft() != null) {
-            node.setLeft(removeMinimo(node.getLeft()));
-            return node;
-        } else {
-            return node.getRight();
-        }
-        return null;
-    }
-
-    private Node encontraMinimo(Node node) {
-        if (node != null) {
-            while (node.getLeft() != null) {
-                node = node.getLeft();
             }
         }
         return node;
+    }
+
+    private BookNode removeMinimo(BookNode node) {
+        if (node.getLeft() == null) {
+            return node.getRight();
+        }
+        node.setLeft(removeMinimo(node.getLeft()));
+        return node;
+    }
+
+    private BookNode encontraMinimo(BookNode node) {
+        while (node.getLeft() != null) {
+            node = node.getLeft();
+        }
+        return node;
+    }
+
+    public BookNode getRoot() {
+        return root;
     }
 }

@@ -1,3 +1,5 @@
+import dataScructures.BinaryTree;
+import dataScructures.BookNode;
 import dataScructures.SequentialList;
 import model.Book;
 
@@ -5,7 +7,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        SequentialList list = new SequentialList();
+        BinaryTree tree = new BinaryTree();
         Scanner scanner = new Scanner(System.in);
 
         Book book1 = new Book( "Senhor dos Anéis: A Sociedade do Anel", "J.R.R Tolkien", 1954);
@@ -21,18 +23,18 @@ public class Main {
         Book book11 = new Book("O Silmarillion", "J.R.R Tolkien", 1977);
         Book book12 = new Book("Entendendo Algoritmos", "Aditya Bhargava", 2017);
 
-        list.add(book1);
-        list.add(book2);
-        list.add(book3);
-        list.add(book4);
-        list.add(book5);
-        list.add(book6);
-        list.add(book7);
-        list.add(book8);
-        list.add(book9);
-        list.add(book10);
-        list.add(book11);
-        list.add(book12);
+        tree.inserir(book1);
+        tree.inserir(book2);
+        tree.inserir(book3);
+        tree.inserir(book4);
+        tree.inserir(book5);
+        tree.inserir(book6);
+        tree.inserir(book7);
+        tree.inserir(book8);
+        tree.inserir(book9);
+        tree.inserir(book10);
+        tree.inserir(book11);
+        tree.inserir(book12);
 
         int option;
 
@@ -48,16 +50,16 @@ public class Main {
 
             switch (option) {
                 case 1:
-                    addBook(list, scanner);
+                    addBook(tree, scanner);
                     break;
                 case 2:
-                    listBooks(list);
+                    listBooks(tree);
                     break;
                 case 3:
-                    sortBooks(list);
+                    sortBooks(tree);
                     break;
                 case 4:
-                    searchBook(list, scanner);
+                    searchBook(tree, scanner);
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -71,7 +73,7 @@ public class Main {
         scanner.close();
     }
 
-    private static void addBook(SequentialList list, Scanner scanner) {
+    private static void addBook(BinaryTree tree, Scanner scanner) {
         System.out.println("Digite o título do livro:");
         String title = scanner.nextLine();
 
@@ -82,30 +84,29 @@ public class Main {
         int publicationYear = scanner.nextInt();
 
         Book book = new Book(title, authorName, publicationYear);
-        list.add(book);
+        tree.inserir(book);
         System.out.println("Livro adicionado com sucesso!");
     }
 
-    private static void listBooks(SequentialList list) {
-        if (list.isEmpty()) {
+    private static void listBooks(BinaryTree tree) {
+        if (tree.isEmpty()) {
             System.out.println("Nenhum livro cadastrado.");
         } else {
-            list.print();
+            tree.imprimirArvore();
         }
     }
 
-    private static void sortBooks(SequentialList list) {
-        if (list.isEmpty()) {
+    private static void sortBooks(BinaryTree tree) {
+        if (tree.isEmpty()) {
             System.out.println("Nenhum livro para ordenar.");
         } else {
-            list.sort();
             System.out.println("Livros ordenados com sucesso!");
-            list.print();
+            tree.imprimirArvore();
         }
     }
 
-    private static void searchBook(SequentialList list, Scanner scanner) {
-        if (list.isEmpty()) {
+    private static void searchBook(BinaryTree tree, Scanner scanner) {
+        if (tree.isEmpty()) {
             System.out.println("Nenhum livro cadastrado.");
             return;
         }
@@ -113,14 +114,33 @@ public class Main {
         System.out.println("Digite o título do livro que deseja buscar:");
         String title = scanner.nextLine();
 
-        for (int i = 0; i < list.size(); i++) {
-            Book book = list.get(i);
-            if (book.getTitle().equalsIgnoreCase(title)) {
-                System.out.println("Livro encontrado: " + book);
-                return;
-            }
+        // Inicia a busca a partir do nó raiz
+        BookNode foundNode = searchBookInTree(tree.getRoot(), title);
+
+        if (foundNode != null) {
+            System.out.println("Livro encontrado: " + foundNode.getBook());
+        } else {
+            System.out.println("Livro não encontrado.");
+        }
+    }
+
+    // Método auxiliar para busca recursiva de um livro na árvore binária
+    private static BookNode searchBookInTree(BookNode node, String title) {
+        if (node == null) {
+            return null;  // Livro não encontrado
         }
 
-        System.out.println("Livro não encontrado.");
+        // Comparar o título do livro com o título do nó atual
+        int comparison = node.getBook().getTitle().compareToIgnoreCase(title);
+
+        if (comparison == 0) {
+            return node;  // Livro encontrado
+        } else if (comparison > 0) {
+            return searchBookInTree(node.getLeft(), title);  // Buscar na subárvore à esquerda
+        } else {
+            return searchBookInTree(node.getRight(), title);  // Buscar na subárvore à direita
+        }
     }
+
+
 }
